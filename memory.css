@@ -64,7 +64,7 @@ body{
 
 #p1, #p2, #player1Moves, #player2Moves{
   font-style: bold;
-  font-size: 30px;
+  font-size: 20px;
   text-align: center;
 }
 
@@ -113,7 +113,7 @@ body{
   background-color: black;
   color: black;
   font-style: bold;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .avatar{
