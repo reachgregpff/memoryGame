@@ -62,7 +62,7 @@ body{
 
 }
 
-#p1, #p2, #player1Score, #player2Score{
+#p1, #p2, #player1Moves, #player2Moves{
   font-style: bold;
   font-size: 30px;
   text-align: center;
