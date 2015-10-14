@@ -43,26 +43,34 @@ var game = {
 //global variables here
 var cardsDiscovered = [false, false, false, false, false, false, false, false, false, false, false, false];
 var pairCount = 0;
+$('#startButton2').fadeTo("slow", 0.1);  //fade button2 at start of game
+
 
 function checkIfGameOver(){
   if(pairCount===6){
     if(game.player1 === true) {
       $('#player1Moves').html("Game over in " + game.p1Moves + " moves!");
       console.log("GAME OVER in " + game.p1Moves + "moves");
+      $('#startButton2').fadeTo("slow", 1);
+      $('#startButton1').fadeTo("slow", 0.1);
     }
     else{
       $('#player2Moves').html("Game over in " + game.p2Moves + " moves!");
       console.log("GAME OVER in " + game.p2Moves + "moves");
+      $('#startButton1').fadeTo("slow", 1);
+      $('#startButton2').fadeTo("slow", 0.1);
       if(game.p2Moves < game.p1Moves){
         //player 2 wins
         game.p2Score++;
-      }else{
+      }else if(game.p2Moves > game.p1Moves){
         //player 1 wins
         game.p1Score++;
-      }
+      }  // Do nothing if tie
       console.log("player1 score " + game.p1Score + "player2 score " + game.p2Score);
       $('#score1').html("SCORE :" + game.p1Score );
       $('#score2').html("SCORE :" + game.p2Score );
+      game.p1Moves = 0;
+      game.p2Moves = 0;
     }
   }
 }
@@ -146,13 +154,17 @@ function reset(){
 
 function startGameForPlayer1(){
   game.player1 = true;
+  $('#player1Moves').html("MOVES :");
   reset();
+  $('#startButton2').fadeTo("slow", 0.1);
   game.getRandomCardArray();
 }
 
 function startGameForPlayer2(){
   game.player1 = false;
+  $('#player2Moves').html("MOVES :");
   reset();
+  $('#startButton1').fadeTo("slow", 0.1);
   game.getRandomCardArray();
 }
 
