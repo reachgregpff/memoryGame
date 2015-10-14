@@ -1,0 +1,170 @@
+body{
+  margin: 0 auto;
+  max-width: 950px
+}
+
+.span-1, .span-2, .span-3 {
+  max-height:  80px;
+  margin-bottom: 2px;       /* 10/900 */
+  float: left;
+  margin-right: 1.11111111%;
+   
+  width: 98.88888%;  //added thjis to make it responsive
+}
+
+/* HEADER */
+#mainImage1, #mainImage2, #mainImage3{
+  float: left; /* does nothing*/
+  max-width: 100%;
+  max-height: 80px;
+  position: relative;
+  left: 9%;
+}
+
+#mainImage3{
+  transform: scaleX(-1);
+}
+
+.span-1 {
+  background-color: mistyrose;
+  /* 290 / 900   - --------- 10 for margin-right for each span*/
+  /*width: 32.222222%;*/
+
+}
+
+.span-2 {
+  background-color: plum;
+  /* 590/900  - 10 for margin-right for each span*/ 
+  /*width: 65.555555555%;*/
+
+}
+
+.span-3 {
+  background-color: white;
+  /* 890/900 */
+  /*width: 98.88888%;*/
+}
+
+
+/* PLAYER COLUMNS */
+
+.player-column, .content {
+  min-height:  520px;
+  margin-bottom: 2px;       /* 10/900 */
+  float: left;
+  margin-right: 1.11111111%;
+  width: 98.88888%;  //added thjis to make it responsive
+
+}
+
+.player-column{
+  background-color: #FFCC66;
+
+}
+
+#p1, #p2, #player1Score, #player2Score{
+  font-style: bold;
+  font-size: 30px;
+  text-align: center;
+}
+
+#score1, #score2{
+  ont-style: bold;
+  font-size: 30px;
+  text-align: center;
+  color:red;
+}
+
+#startButton1, #startButton2, #playerImage1, #playerImage2{
+  width: 60%;
+  position: relative;
+  left:20%;
+}
+
+/* CONTENT */
+
+
+.randomCards{
+  margin-bottom: 10px; 
+  float: left;
+  margin-right: 1.58%;
+  display: inline;
+  background-color: white
+  max-height: 200px;
+}
+
+.randomCardImg{
+  width:90%;
+}
+
+
+
+
+/* FOOTERS */
+
+.span-4 {
+  max-height:  25px;
+  margin-top: 2px;
+  margin-bottom: 2px;       /* 10/900 */
+  float: left;
+  margin-right: 1.11111111%;
+   
+  width: 98.88888%;  //added this to make it responsive
+  background-color: black;
+  color: black;
+  font-style: bold;
+  font-size: 10px;
+}
+
+.avatar{
+  min-height:  100px;
+  margin-bottom: 10px; 
+  float: left;
+  margin-right: 1.11111111%;
+  display: inline;    /* to make images inline */
+  background-color: gold;
+  max-height: 100px;
+
+}
+
+
+.avatarimg{
+  width : 95%;
+
+}
+
+
+
+/* MAKE RESPONSIVE */
+
+@media all and (min-width: 40em) {
+
+  .span-2 {
+    width: 65.555555555%;
+  }
+  .span-1{
+    width: 32.222222%;
+  }
+
+  .player-column{
+    width: 18.88888%;
+  }
+
+  .content{
+    width: 58.88888%;
+  }
+
+  .avatar{
+    width: 7.88888%;
+  }
+
+  .randomCards{
+    width: 23.2%;
+  }
+}
+
+
+
+
+
+
