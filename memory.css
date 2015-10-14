@@ -15,13 +15,12 @@ body{
 /* HEADER */
 #mainImage1, #mainImage2, #mainImage3{
   float: left; /* does nothing*/
-  max-width: 100%;
   max-height: 80px;
   position: relative;
   left: 9%;
 }
 
-#mainImage3{
+#mainImage2{
   transform: scaleX(-1);
 }
 
@@ -70,13 +69,13 @@ body{
 
 #score1, #score2{
   ont-style: bold;
-  font-size: 30px;
+  font-size: 25px;
   text-align: center;
   color:red;
 }
 
-#startButton1, #startButton2, #playerImage1, #playerImage2{
-  width: 60%;
+#startButton1, #startButton2, #playerImage1, #playerImage2, #winner1, #winner2{
+  
   position: relative;
   left:20%;
 }
@@ -137,7 +136,8 @@ body{
 
 /* MAKE RESPONSIVE */
 
-@media all and (min-width: 40em) {
+/*@media all and (min-width: 40em) { */
+@media all and (min-width: 35em) {
 
   .span-2 {
     width: 65.555555555%;
@@ -161,6 +161,21 @@ body{
   .randomCards{
     width: 23.2%;
   }
+
+  #mainImage1, #mainImage2, #mainImage3{
+    width: 25%;
+  }
+
+  #startButton1, #startButton2, #playerImage1, #playerImage2{
+    width: 60%;
+    left:20%;
+  }
+
+  #winner1, #winner2{
+    width: 30%;
+    left:40%;
+  }
+
 }
 
 

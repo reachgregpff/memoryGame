@@ -37,24 +37,29 @@ var game = {
       game.p2Moves++;
     }
   }
-
 }
 
 //global variables here
 var cardsDiscovered = [false, false, false, false, false, false, false, false, false, false, false, false];
 var pairCount = 0;
+var gameStarted = false;
 $('#startButton2').fadeTo("slow", 0.1);  //fade button2 at start of game
-
 
 function checkIfGameOver(){
   if(pairCount===6){
+    $('#mainImage3').attr("src", "img/banner.jpeg");  //this is not working
+    $('#mainImage3').fadeTo("slow", 1);
+    gameStarted = false;
+    
     if(game.player1 === true) {
+      
       $('#player1Moves').html("Game over in " + game.p1Moves + " moves!");
       console.log("GAME OVER in " + game.p1Moves + "moves");
       $('#startButton2').fadeTo("slow", 1);
       $('#startButton1').fadeTo("slow", 0.1);
     }
     else{
+      
       $('#player2Moves').html("Game over in " + game.p2Moves + " moves!");
       console.log("GAME OVER in " + game.p2Moves + "moves");
       $('#startButton1').fadeTo("slow", 1);
@@ -62,9 +67,13 @@ function checkIfGameOver(){
       if(game.p2Moves < game.p1Moves){
         //player 2 wins
         game.p2Score++;
+        $('#winner2').attr("src", "img/winner.png");
+        $('#winner2').fadeTo("fast", 1);
       }else if(game.p2Moves > game.p1Moves){
         //player 1 wins
         game.p1Score++;
+        $('#winner1').attr("src", "img/winner.png");
+        $('#winner1').fadeTo("fast", 1);
       }  // Do nothing if tie
       console.log("player1 score " + game.p1Score + "player2 score " + game.p2Score);
       $('#score1').html("SCORE :" + game.p1Score );
@@ -75,7 +84,6 @@ function checkIfGameOver(){
   }
 }
 
-
 function checkIfClickedCorrectly(){
 
   var currentCardIndex = $(this).attr('data-index');  //find index of card that was clicked
@@ -83,6 +91,10 @@ function checkIfClickedCorrectly(){
   if(game.previousCardIndex !=  -1){
     console.log("Previous Index is " + game.previousCardIndex + " & previous card clicked is " + game.randomCardArray[game.previousCardIndex]);
   }*/
+
+  if(gameStarted === false){
+    return;   // Start button not clicked yet
+  }
 
   game.incrementMoves(); // increment the moves count
 
@@ -109,30 +121,25 @@ function checkIfClickedCorrectly(){
 
     checkIfGameOver();
 
-    game.previousCardIndex = -1;   // reset the previous card
+    game.previousCardIndex = -1;   // re-set the previous card
   }else{
     game.previousCardIndex = currentCardIndex;
     game.flipCardTwice(currentCardIndex);  // Flip and then revert back to avatar
-  }
-  //##########################################################end of main logic
-  return;
+  } //##########################################################end of main logic
 }
 
 function refreshCardDisplay(){
   //change the face of every random card
-  //$('.randomCards .randomCardImg').each(function(){  // USING JQUERY each just this once, use underscore next time
   for(var i=0; i<cardsDiscovered.length; i++) {
-  //_.each($('.randomCards .randomCardImg'), index, function(){
     if(cardsDiscovered[i]===false){
       $('.randomCards .randomCardImg').eq(i).attr("src", game.currentAvatarImage);
     }
   }
 }
 
-function changeAvatar(){
+function changeAvatar(){  //Change Player's profile image
 
   game.currentAvatarImage = $(this).attr('src');
-  //Change Player's profile image
 
   if(game.player1===true) {
     $('#playerImage1').attr("src", game.currentAvatarImage);
@@ -142,32 +149,35 @@ function changeAvatar(){
   refreshCardDisplay();
 }
 
-function reset(){
-  //_.each(cardsDiscovered, function(elem){elem=false;});   //this underscore method is not working, why?
+function initialise(){
   for(var i=0; i<cardsDiscovered.length; i++){
     cardsDiscovered[i] = false;
   }
   game.previousCardIndex = -1;
   refreshCardDisplay();
   pairCount = 0;
+  $('#mainImage3').fadeTo("slow", 0.00000001);
+  $('#winner1').fadeTo("slow", 0.00000001);
+  $('#winner2').fadeTo("slow", 0.00000001);
 }
 
 function startGameForPlayer1(){
   game.player1 = true;
+  gameStarted = true;
   $('#player1Moves').html("MOVES :");
-  reset();
+  $('#player2Moves').html("MOVES :");
+  initialise();
   $('#startButton2').fadeTo("slow", 0.1);
   game.getRandomCardArray();
 }
 
 function startGameForPlayer2(){
   game.player1 = false;
-  $('#player2Moves').html("MOVES :");
-  reset();
+  gameStarted = true;
+  initialise();
   $('#startButton1').fadeTo("slow", 0.1);
   game.getRandomCardArray();
 }
-
 
 //add event handlers
 $('.avatar').on('click', 'img', changeAvatar);
