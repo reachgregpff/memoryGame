@@ -13,15 +13,29 @@ body{
 }
 
 /* HEADER */
-#mainImage1, #mainImage2, #mainImage3{
+#mainImage1, #mainImage2, #congrats, #ignore{
   float: left; /* does nothing*/
   max-height: 80px;
-  position: relative;
-  left: 9%;
 }
 
 #mainImage2{
   transform: scaleX(-1);
+}
+
+#congrats{
+  z-index: 1;
+}
+
+#ignore{
+  float:right;
+}
+
+#gameTimer{
+  float: left;
+  font-size: 50px;
+  font-weight: bold;
+  margin: 2px;
+  color: red;
 }
 
 .span-1 {
@@ -162,8 +176,12 @@ body{
     width: 23.2%;
   }
 
-  #mainImage1, #mainImage2, #mainImage3{
-    width: 25%;
+  #mainImage1, #mainImage2{
+    width: 10%;
+  }
+
+  #congrats{
+    width: 18%;
   }
 
   #startButton1, #startButton2, #playerImage1, #playerImage2{

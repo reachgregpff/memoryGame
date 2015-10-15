@@ -5,11 +5,16 @@ var game = {
   p2Score: 0,
   p1Moves: 0,
   p2Moves: 0,
-  FLIPTIME: 500,
+  CARD_FLIPTIME: 500,
+  GAME_TIMER: 2*60*1000, // 2 minutes
   flipTimer: null,
   currentAvatarImage: "img/av00.png",
   allCards : ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png"],
   randomCardArray : [],
+  cheatObjects : [{card: "", id: 0}, {card: "", id: 1}, {card: "", id: 2}, {card: "", id: 3},
+                  {card: "", id: 4}, {card: "", id: 5}, {card: "", id: 6}, {card: "", id: 7},
+                  {card: "", id: 8}, {card: "", id: 9}, {card: "", id: 10}, {card: "", id: 11}],
+  cheatImages : ["w0.png", "w1.png", "w2.png", "w3.png", "w4.png", "w5.png", "w6.png", "w7.png", "w8.png", "w9.png", "w10.png", "w11.png"],
   getRandomCardArray: function(){
     game.randomCardArray = (_.shuffle(game.allCards)).slice(0, 6);  //0 including and 6 excluding
     game.randomCardArray = _.shuffle(game.randomCardArray.concat(game.randomCardArray));  //create duplicates, then shuffle again
@@ -17,6 +22,15 @@ var game = {
     console.log(game.randomCardArray.slice(0,4));
     console.log(game.randomCardArray.slice(4,8));
     console.log(game.randomCardArray.slice(8));
+
+    game.populateCheat();
+
+  },
+  populateCheat: function(){  //for cheaters
+    _.each(game.randomCardArray, function(elem, index){game.cheatObjects[index].card = elem; console.log("cheat: "+ game.cheatObjects[index].card)});
+    game.cheatObjects = _.sortBy(game.cheatObjects, 'card');
+    _.each(game.cheatObjects, function(elem){ console.log("Card: " + elem.card + " Id: "+ elem.id)});
+
   },
   flipCard : function(flipIndex, image){
     $card = $('.randomCards .randomCardImg').eq(flipIndex);
@@ -28,7 +42,7 @@ var game = {
   },
   flipCardTwice : function(flipIndex){
     game.flipCard(flipIndex);
-    game.flipTimer = window.setInterval(function(){game.flipCard(flipIndex, "flipagain"); window.clearInterval(game.flipTimer);}, game.FLIPTIME);
+    game.flipTimer = window.setInterval(function(){game.flipCard(flipIndex, "flipagain"); window.clearInterval(game.flipTimer);}, game.CARD_FLIPTIME);
   },
   incrementMoves(){
     if(game.player1 == true){
@@ -43,40 +57,46 @@ var game = {
 var cardsDiscovered = [false, false, false, false, false, false, false, false, false, false, false, false];
 var pairCount = 0;
 var gameStarted = false;
+var cheatCount=0;
 $('#startButton2').fadeTo("slow", 0.1);  //fade button2 at start of game
 
 function checkIfGameOver(){
-  if(pairCount===6){
-    $('#mainImage3').attr("src", "img/banner.jpeg");  //this is not working
-    $('#mainImage3').fadeTo("slow", 1);
+  if(pairCount===6){        //Game completed
+    $('#congrats').attr("src", "img/congratulations.gif");  //this is not working
+    $('#congrats').fadeTo("slow", 1);
     gameStarted = false;
     
-    if(game.player1 === true) {
+    if(game.player1 === true) {      // PLAYER 1 PLAYED
       
       $('#player1Moves').html("Game over in " + game.p1Moves + " moves!");
       console.log("GAME OVER in " + game.p1Moves + "moves");
       $('#startButton2').fadeTo("slow", 1);
       $('#startButton1').fadeTo("slow", 0.1);
     }
-    else{
+    else{                           // PLAYER 2 PLAYED
       
       $('#player2Moves').html("Game over in " + game.p2Moves + " moves!");
       console.log("GAME OVER in " + game.p2Moves + "moves");
       $('#startButton1').fadeTo("slow", 1);
       $('#startButton2').fadeTo("slow", 0.1);
-      if(game.p2Moves < game.p1Moves){
+
+      if(game.p2Moves < game.p1Moves){                //PLAYER 2 WON   
         //player 2 wins
         game.p2Score++;
         $('#winner2').attr("src", "img/winner.png");
         $('#winner2').fadeTo("fast", 1);
-      }else if(game.p2Moves > game.p1Moves){
+      }else if(game.p2Moves > game.p1Moves){         // PLAYER 1 WON
         //player 1 wins
         game.p1Score++;
         $('#winner1').attr("src", "img/winner.png");
         $('#winner1').fadeTo("fast", 1);
-      }  // Do nothing if tie
+      }else { // Do nothing if tie, except display tie images   // IT WAS A TIE / Both WIN!
+        $('#winner1').attr("src", "img/winner.png");
+        $('#winner2').attr("src", "img/winner.png");
+        console.log("TIE!");
+      }
       console.log("player1 score " + game.p1Score + "player2 score " + game.p2Score);
-      $('#score1').html("SCORE :" + game.p1Score );
+      $('#score1').html("SCORE :" + game.p1Score );     // UPDATE SCORES and RESET MOVES for both
       $('#score2').html("SCORE :" + game.p2Score );
       game.p1Moves = 0;
       game.p2Moves = 0;
@@ -95,6 +115,9 @@ function checkIfClickedCorrectly(){
   if(gameStarted === false){
     return;   // Start button not clicked yet
   }
+
+  //for cheaters
+  setCheatImage();
 
   game.incrementMoves(); // increment the moves count
 
@@ -156,10 +179,24 @@ function initialise(){
   game.previousCardIndex = -1;
   refreshCardDisplay();
   pairCount = 0;
-  $('#mainImage3').fadeTo("slow", 0.00000001);
+  $('#congrats').fadeTo("slow", 0.00000001);
   $('#winner1').fadeTo("slow", 0.00000001);
   $('#winner2').fadeTo("slow", 0.00000001);
+  $('#gameTimer').html("[ 02:00 ]");
+
 }
+
+//For cheaters
+function setCheatImage(){
+  if(cheatCount < 12) {
+    $('#ignore').attr('src', ("img/" + game.cheatImages[game.cheatObjects[cheatCount].id]));
+    cheatCount++;
+  }else if(cheatCount === 12){
+    $('#ignore').attr('src', "img/whitebox.png");
+    cheatCount = 0;
+  }
+}
+
 
 function startGameForPlayer1(){
   game.player1 = true;
@@ -169,6 +206,7 @@ function startGameForPlayer1(){
   initialise();
   $('#startButton2').fadeTo("slow", 0.1);
   game.getRandomCardArray();
+  
 }
 
 function startGameForPlayer2(){
@@ -184,3 +222,5 @@ $('.avatar').on('click', 'img', changeAvatar);
 $('#startButton1').on('click', startGameForPlayer1);
 $('#startButton2').on('click', startGameForPlayer2);
 $('.randomCards .randomCardImg').on('click', checkIfClickedCorrectly);
+$('#ignore').on('click', setCheatImage);
+
