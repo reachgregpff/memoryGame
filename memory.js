@@ -6,8 +6,7 @@ var game = {
   p1Moves: 0,
   p2Moves: 0,
   CARD_FLIPTIME: 500,
-  GAME_TIMER: 2*60*1000, // 2 minutes
-  flipTimer: null,
+  GAME_TIMER: 1000, // every second
   currentAvatarImage: "img/av00.png",
   allCards : ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png"],
   randomCardArray : [],
@@ -45,7 +44,7 @@ var game = {
   },
   flipCardTwice : function(flipIndex){
     game.flipCard(flipIndex);
-    game.flipTimer = window.setInterval(function(){game.flipCard(flipIndex, "flipagain"); window.clearInterval(game.flipTimer);}, game.CARD_FLIPTIME);
+    flipTimer = window.setInterval(function(){game.flipCard(flipIndex, "flipagain"); window.clearInterval(flipTimer);}, game.CARD_FLIPTIME);
   },
   incrementMoves(){
     if(game.player1 == true){
@@ -59,15 +58,22 @@ var game = {
 //global variables here
 var cardsDiscovered = [false, false, false, false, false, false, false, false, false, false, false, false];
 var pairCount = 0;
-var gameStarted = false;
+var gameStarted = false; 
+var gameTimeout = false;
 var cheatCount=0;
+var gameTimer = null; 
+var flipTimer = null;
+var secondsCount = null;
+var cheat = false;
+
 $('#startButton2').fadeTo("slow", 0.1);  //fade button2 at start of game
 
-function checkIfGameOver(){
+function checkIfGameSuccessful(){
   if(pairCount===6){        //Game completed
     //play sound file
     var audio = new Audio('sound/Magical-SoundBible.com-224013670.mp3');
     audio.play();
+    window.clearInterval(gameTimer);
 
     $('#congrats').attr("src", "img/congratulations.gif");  //this is not working
     $('#congrats').fadeTo("slow", 1);
@@ -87,26 +93,34 @@ function checkIfGameOver(){
       $('#startButton1').fadeTo("slow", 1);
       $('#startButton2').fadeTo("slow", 0.1);
 
-      if(game.p2Moves < game.p1Moves){                //PLAYER 2 WON   
+
+      //CALCULATE FINAL SCORES
+
+      if(game.p1Moves === "timeout" || game.p2Moves < game.p1Moves){                //PLAYER 2 WON   
         //player 2 wins
         game.p2Score++;
         $('#winner2').attr("src", "img/winner.png");
         $('#winner2').fadeTo("fast", 1);
-      }else if(game.p2Moves > game.p1Moves){         // PLAYER 1 WON
+      }else if(game.p2Moves === "timeout" || game.p2Moves > game.p1Moves){         // PLAYER 1 WON
         //player 1 wins
         game.p1Score++;
         $('#winner1').attr("src", "img/winner.png");
         $('#winner1').fadeTo("fast", 1);
-      }else { // Do nothing if tie, except display tie images   // IT WAS A TIE / Both WIN!
+      }else if(game.p2Moves === game.p1Moves){ // Do nothing if tie, except display tie images   // IT WAS A TIE / Both WIN!
         $('#winner1').attr("src", "img/winner.png");
         $('#winner2').attr("src", "img/winner.png");
         console.log("TIE!");
+      }else if(game.p1Moves === "timeout" && game.p2Moves === "timeout"){  // both players timedout
+        console.log("BOTH PLAYERS TIMEOUT");
       }
+
+      //DISPLAY FINAL SCORES
       console.log("player1 score " + game.p1Score + "player2 score " + game.p2Score);
       $('#score1').html("SCORE :" + game.p1Score );     // UPDATE SCORES and RESET MOVES for both
       $('#score2').html("SCORE :" + game.p2Score );
       game.p1Moves = 0;
       game.p2Moves = 0;
+      cheat = false;
     }
   }
 }
@@ -119,12 +133,14 @@ function checkIfClickedCorrectly(){
     console.log("Previous Index is " + game.previousCardIndex + " & previous card clicked is " + game.randomCardArray[game.previousCardIndex]);
   }*/
 
-  if(gameStarted === false){
+  if(gameStarted === false  ||  gameTimeout === true){
     return;   // Start button not clicked yet
   }
 
   //for cheaters
-  setCheatImage();
+  if( cheat === true){
+    setCheatImage();
+  }
 
   game.incrementMoves(); // increment the moves count
 
@@ -149,7 +165,7 @@ function checkIfClickedCorrectly(){
     cardsDiscovered[game.previousCardIndex] = true;
     pairCount++;
 
-    checkIfGameOver();
+    checkIfGameSuccessful();
 
     game.previousCardIndex = -1;   // re-set the previous card
   }else{
@@ -189,8 +205,12 @@ function initialise(){
   $('#congrats').fadeTo("slow", 0.00000001);
   $('#winner1').fadeTo("slow", 0.00000001);
   $('#winner2').fadeTo("slow", 0.00000001);
-  $('#gameTimer').html("[ 02:00 ]");
+  $('#gameTimer').html("[ 01:00 ]");
+  gameTimeout = false;
 
+  //reset cheat variables
+  $('#ignore').attr('src', "img/whitebox.png");
+  cheatCount = 0;
 }
 
 //For cheaters
@@ -206,11 +226,50 @@ function setCheatImage(){
 }
 
 function cheatHere(){
+    cheat = true;
     $('#ignore').attr('src', "img/whitebox.png");
     cheatCount = 0;
     setCheatImage();
 }
 
+function beginCountDown(){
+
+  if(secondsCount === 0 ) {
+  //gameover!
+    window.clearInterval(gameTimer);
+    $('#gameTimer').html("TIME OUT!");
+    gameTimeout = true;
+    cheat = false;
+
+    //disable and enable start buttons
+    if(game.player1 === true) {
+      $('#startButton2').fadeTo("slow", 1);
+      $('#startButton1').fadeTo("slow", 0.1); 
+      game.p1Moves = "timeout";
+      $('#player1Moves').html("MOVES: Timeout!");
+    }else{
+      $('#startButton1').fadeTo("slow", 1);
+      $('#startButton2').fadeTo("slow", 0.1);
+      game.p2Moves = "timeout";
+      $('#player2Moves').html("MOVES: Timeout!");
+    }
+
+  } else{
+    secondsCount--;
+    var secs = (secondsCount%60);
+    if(secs >= 10){
+      $('#gameTimer').html("[ 0"+ Math.floor((secondsCount/60)) + ":"+ (secondsCount%60)  + " ]");
+    }else{
+      $('#gameTimer').html("[ 0"+ Math.floor((secondsCount/60)) + ":0"+ (secondsCount%60)  + " ]");
+    }
+  }
+
+}
+
+function triggerGameTimer(){
+  secondsCount = 60;  //timeout of 60 seconds
+  gameTimer = window.setInterval( beginCountDown, game.GAME_TIMER);
+}
 
 function startGameForPlayer1(){
   game.player1 = true;
@@ -220,7 +279,7 @@ function startGameForPlayer1(){
   initialise();
   $('#startButton2').fadeTo("slow", 0.1);
   game.getRandomCardArray();
-  
+  triggerGameTimer();
 }
 
 function startGameForPlayer2(){
@@ -229,6 +288,7 @@ function startGameForPlayer2(){
   initialise();
   $('#startButton1').fadeTo("slow", 0.1);
   game.getRandomCardArray();
+  triggerGameTimer();
 }
 
 //add event handlers
