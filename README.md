@@ -37,6 +37,6 @@ Memory Concentration Game of flipping Cards
 
 ## Hosted version of my game
  
-   <link here>
+   http://reachgregpff.github.io/memoryGame/
 
    
