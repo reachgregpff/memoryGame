@@ -268,6 +268,7 @@ function beginCountDown(){
 
 function triggerGameTimer(){
   secondsCount = 60;  //timeout of 60 seconds
+  window.clearInterval(gameTimer);
   gameTimer = window.setInterval( beginCountDown, game.GAME_TIMER);
 }
 
