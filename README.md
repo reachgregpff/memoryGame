@@ -33,7 +33,7 @@ Memory Concentration Game of flipping Cards
 
   https://github.com/reachgregpff/memoryGame.git
 
-  <show commit logs>
+  10 commits from day 1 until end of day 2.
 
 ## Hosted version of my game
  
