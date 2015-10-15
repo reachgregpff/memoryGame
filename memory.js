@@ -27,9 +27,12 @@ var game = {
 
   },
   populateCheat: function(){  //for cheaters
-    _.each(game.randomCardArray, function(elem, index){game.cheatObjects[index].card = elem; console.log("cheat: "+ game.cheatObjects[index].card)});
+    _.each(game.cheatObjects, function(elem, index){elem.id = index;}); //initialize ids
+    _.each(game.randomCardArray, function(elem, index){game.cheatObjects[index].card = elem; 
+    //console.log("cheat: "+ game.cheatObjects[index].card);
+    });
     game.cheatObjects = _.sortBy(game.cheatObjects, 'card');
-    _.each(game.cheatObjects, function(elem){ console.log("Card: " + elem.card + " Id: "+ elem.id)});
+    //_.each(game.cheatObjects, function(elem){ console.log("Card: " + elem.card + " Id: "+ elem.id)});
 
   },
   flipCard : function(flipIndex, image){
@@ -62,6 +65,10 @@ $('#startButton2').fadeTo("slow", 0.1);  //fade button2 at start of game
 
 function checkIfGameOver(){
   if(pairCount===6){        //Game completed
+    //play sound file
+    var audio = new Audio('sound/Magical-SoundBible.com-224013670.mp3');
+    audio.play();
+
     $('#congrats').attr("src", "img/congratulations.gif");  //this is not working
     $('#congrats').fadeTo("slow", 1);
     gameStarted = false;
@@ -192,9 +199,16 @@ function setCheatImage(){
     $('#ignore').attr('src', ("img/" + game.cheatImages[game.cheatObjects[cheatCount].id]));
     cheatCount++;
   }else if(cheatCount === 12){
+    //reset cheat variables
     $('#ignore').attr('src', "img/whitebox.png");
     cheatCount = 0;
   }
+}
+
+function cheatHere(){
+    $('#ignore').attr('src', "img/whitebox.png");
+    cheatCount = 0;
+    setCheatImage();
 }
 
 
@@ -222,5 +236,5 @@ $('.avatar').on('click', 'img', changeAvatar);
 $('#startButton1').on('click', startGameForPlayer1);
 $('#startButton2').on('click', startGameForPlayer2);
 $('.randomCards .randomCardImg').on('click', checkIfClickedCorrectly);
-$('#ignore').on('click', setCheatImage);
+$('#ignore').on('click', cheatHere);
 
