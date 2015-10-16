@@ -8,7 +8,7 @@ Memory Concentration Game of flipping Cards
   - What it does
     The game allows 2 players to compete endless rounds, a score is updated everytime player 1 and player 2 complete 1 round each. The timer runs for 1 ninute and the board is disabled for that player for that round if it times out. The game allows a player to choose an avatar.
 
-    P.S:- This game also has a secret invisible 'white' cheat button (with a faint left border) on the right top corner of the game. To use 'cheat', click start, then click the inivisible button, and it will show you your next move with a tiny red dot showing a click-position. Make sure you follow the dots for your next 2 moves.  
+    P.S:- This game also has a secret invisible 'white' cheat button (with a faint left border) on the right top corner of the game. To use 'cheat', click start, then click the inivisible button, and it will show you your next move with a tiny red dot showing a click-position. Make sure you follow the dots correctly for all your moves.  
 
 # The app design and implementation
   - The main game properties are stored as an object. The cards to be displayed are generated via a shuffle-crop-duplicate-shuffle logic from a pool of cards. The main logic is in function 'checkIfClickedCorrectly()'. The game results are displaed in 'checkIfGameSuccessful()'. function 'initialise()' is used to initiase a new game and can be used in the future to restore via persistence. There are functions for 'cheat', 'timer' and 'avatar' functionalities.
